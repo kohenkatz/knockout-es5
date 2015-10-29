@@ -138,6 +138,23 @@ describe('Basic properties', function () {
       assert.equal( computed(), 457);
     });
 
+    it('retains existing functions, wrapping them in a computed', function() {
+      var observable = ko.observable(123),
+        computed = function() { return observable() + 1; },
+        obj = ko.track({ prop: computed });
+
+      assert.equal( obj.prop, 124);
+
+      // Check that the property's value is determined by the computed value
+      observable(456);
+      assert.equal( obj.prop, 457);
+
+      // Also verify it's read-only
+      obj.prop = 789;
+      assert.equal( obj.prop, 457);
+      assert.equal( computed(), 457);
+    });
+
     it('skips properties that are already tracked', function() {
       var observable = ko.observable(123),
         obj = ko.track({ prop: observable }, ['prop']);
