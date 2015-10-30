@@ -86,8 +86,10 @@
   function createPropertyDescriptor(originalValue, prop, map) {
     var isObservable = ko.isObservable(originalValue);
     var isArray = !isObservable && Array.isArray(originalValue);
+    var isFunction = !isObservable && typeof originalValue === 'function';
     var observable = isObservable ? originalValue
         : isArray ? ko.observableArray(originalValue)
+        : isFunction ? ko.computed(originalValue)
         : ko.observable(originalValue);
 
     map[prop] = function () { return observable; };
